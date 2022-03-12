@@ -1,17 +1,34 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <dui-form>
+      <dui-form-item :label="label">
+        <el-input></el-input>
+      </dui-form-item>
+    </dui-form>
+
+    <el-form-comp :formData="formData"></el-form-comp>
+
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import DuiForm from './components/Form.vue'
+import DuiFormItem from './components/FormItem.vue'
+import ElFormComp from './components/elForm.vue'
+import formData from './config/config'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    DuiForm,
+    DuiFormItem,
+    ElFormComp
+  },
+  data(){
+    return {
+      label:'hhh',
+      formData:formData
+    }
   }
 }
 </script>
@@ -21,7 +38,6 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }
