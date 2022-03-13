@@ -5,7 +5,7 @@
         <el-input></el-input>
       </dui-form-item>
     </dui-form> -->
-    <el-form-comp :formData="formData" >
+    <el-form-comp :formData.sync="formData" >
       <template #default="slot">
         <div >
           <el-button type="primary" @click="submitForm(slot.form)">提交</el-button>
