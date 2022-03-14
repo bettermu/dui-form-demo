@@ -3,7 +3,8 @@ const FormConfigData = {
         name: {
             type: 'input',
             label: '活动名称',
-            default: ''
+            default: '',
+            
         }
 
     },

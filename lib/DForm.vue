@@ -38,7 +38,7 @@
                       :ref="field"
                       :field="field"
                       :formData="formData"
-                      @input="setValue(field, $event)"
+                      @update="setValue(field, $event)"
                       :value="formData[field]"
                     />
                   </el-form-item>
@@ -442,6 +442,7 @@ export default {
       return this.formData[field]
     },
     setValue(field, val) {
+      console.log(val)
       this.handleChange(field, val);
       this.checkLinkage();
     },

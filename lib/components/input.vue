@@ -5,7 +5,7 @@
     v-bind="attrs"
     v-model="newValue"
     v-on="desc.on"
-    @input="handleChange"
+    @change="handleChange"
   >
     <!-- <template v-for="(render, key) of slots" v-slot:[key]>
       <extend-slot :key="key" :render="render" />
@@ -27,16 +27,17 @@ export default {
   computed: {
     defaultAttrs() {
       return {
-        placeholder: '请输入' + this.desc.label
+        placeholder: '请输入' + this.desc._label
       }
     }
   },
   methods: {
     handleChange(val) {
+      console.log(this.desc.on)
       if (this.attrs.type === 'number') {
         val = Number(val)
       }
-      this.$emit('input', val)
+      this.$emit('update', val)
     }
   }
 }
