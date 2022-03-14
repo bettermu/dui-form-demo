@@ -7,7 +7,9 @@ const FormConfigData = {
         }
 
     },
-    formData: {}
+    formData: {
+        name:'hhhhh'
+    }
 }
 
 export default FormConfigData
