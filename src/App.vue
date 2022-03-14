@@ -5,14 +5,18 @@
         <el-input></el-input>
       </dui-form-item>
     </dui-form> -->
-    <el-form-comp :formData.sync="formData" >
+    <!-- <el-form-comp :formData.sync="formData" >
       <template #default="slot">
         <div >
           <el-button type="primary" @click="submitForm(slot.form)">提交</el-button>
           <el-button @click="addItem">新增表单项</el-button>
         </div>
       </template>
-    </el-form-comp>
+    </el-form-comp> -->
+    <d-form 
+    :form-data="FormConfigData.formData"
+    :form-desc="FormConfigData.formDesc">
+    </d-form>
   </div>
 </template>
 
@@ -20,7 +24,9 @@
 import DuiForm from "./components/Form.vue";
 import DuiFormItem from "./components/FormItem.vue";
 import ElFormComp from "./components/elForm.vue";
-import formData from "./config/config";
+import EleFormComp from './components/newForm.vue'
+//import formData from "./config/config";
+import FormConfigData from './config/newConfig'
 
 export default {
   name: "App",
@@ -28,39 +34,16 @@ export default {
     DuiForm,
     DuiFormItem,
     ElFormComp,
+    EleFormComp
   },
   data() {
     return {
       label: "hhh",
-      formData: formData,
+      FormConfigData: FormConfigData,
     };
   },
   methods: {
-    addItem() {
-      this.formData.push({
-        name: "desc",
-        comp: "el-input",
-        compProps: {
-          type: "textarea",
-        },
-        itemProps: {
-          label: "活动形式",
-          prop: "desc",
-        },
-        value: "",
-        rules: [{ required: true, message: "请填写活动形式", trigger: "blur" }],
-      });
-    },
-    submitForm(ref){
-      ref.validate((valid) => {
-          if (valid) {
-            alert('submit!');
-          } else {
-            console.log('error submit!!');
-            return false;
-          }
-        });
-    }
+    
   },
 };
 </script>
