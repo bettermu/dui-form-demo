@@ -7,6 +7,7 @@
             ref="form"
             :label-width="computedLabelWidth"
             :label-position="computedLabelPosition"
+            :rules="computedRules"
             :model="formData"
           >
             <!-- 默认插槽作为表单项 -->
