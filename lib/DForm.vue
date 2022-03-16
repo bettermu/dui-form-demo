@@ -8,7 +8,11 @@
             :label-width="computedLabelWidth"
             :label-position="computedLabelPosition"
             :rules="computedRules"
+            @submit.native.prevent="handleSubmitForm"
             :model="formData"
+            :validate-on-rule-change="false"
+            :disabled="disabled"
+          v-bind="formAttrs"
           >
             <!-- 默认插槽作为表单项 -->
             <slot />
@@ -540,7 +544,9 @@ export default {
     getComponentName(type) {
       if (this.$DFormBuiltInNames.includes(type)) {
         // 内置组件
+        console.log("d-form-"+type)
         return "d-form-" + type;
+        
       } else {
         // 外部组件
         return type;
