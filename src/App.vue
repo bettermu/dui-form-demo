@@ -15,7 +15,8 @@
     </el-form-comp> -->
     <d-form 
     :form-data="FormConfigData.formData"
-    :form-desc="FormConfigData.formDesc">
+    :form-desc="FormConfigData.formDesc"
+    :inline="FormConfigData.inline">
     </d-form>
   </div>
 </template>

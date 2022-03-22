@@ -1,80 +1,48 @@
 <template>
-  <div>
-    <div class="">
-      <el-row justify="center" type="flex">
-        <el-col>
-          <el-form
-            ref="form"
-            :label-width="computedLabelWidth"
-            :label-position="computedLabelPosition"
-            :rules="computedRules"
-            @submit.native.prevent="handleSubmitForm"
-            :model="formData"
-            :validate-on-rule-change="false"
-            :disabled="disabled"
-          v-bind="formAttrs"
-          >
-            <!-- 默认插槽作为表单项 -->
-            <slot />
-            <el-row :gutter="20">
-              <template v-for="(formItem, field) of orderedFormDesc">
-                <el-col
-                  :key="field"
-                  v-bind="formItem._colAttrs"
-                  v-if="formItem._vif"
-                  :class="{ 'ele-form-col--break': formItem.break }"
-                >
-                  <el-form-item
-                    :error="formErrorObj ? formErrorObj[field] : null"
-                    :label="
+<div>
+  <div class="">
+    <el-row justify="center" type="flex">
+      <el-col :span="24">
+        <el-form ref="form" :label-width="computedLabelWidth" :label-position="computedLabelPosition" :rules="computedRules" @submit.native.prevent="handleSubmitForm" :model="formData" :validate-on-rule-change="false" :disabled="disabled" v-bind="formAttrs">
+          <!-- 默认插槽作为表单项 -->
+          <slot />
+          <el-row :gutter="20">
+            <template v-for="(formItem, field) of formDescData">
+              <el-col :key="field" v-bind="formItem._colAttrs" v-if="formItem._vif" :class="{ 'ele-form-col--break': formItem.break }">
+                <el-form-item :error="formErrorObj ? formErrorObj[field] : null" :label="
                       isShowLabel && formItem.isShowLabel !== false
                         ? formItem._label
                         : null
-                    "
-                    :label-width="formItem.labelWidth || null"
-                    :prop="field"
-                  >
-                    <component
-                      :disabled="formItem._disabled"
-                      :readonly="readonly"
-                      :desc="formItem"
-                      :is="formItem._type"
-                      :options="formItem._options"
-                      :ref="field"
-                      :field="field"
-                      :formData="formData"
-                      @update="setValue(field, $event)"
-                      :value="formData[field]"
-                    />
-                  </el-form-item>
-                </el-col>
-              </template>
-              <slot name="form-footer" />
-              <!-- 操作按钮区 -->
-              <el-col class="ele-form-btns" v-if="btns.length">
-                <el-form-item :label-width="inline ? '10px' : null">
-                  <!-- 按钮插槽 -->
-                  <slot :btns="btns" name="form-btn">
-                    <el-button
-                      :key="index"
-                      @click="btn.click"
-                      v-bind="btn.attrs"
-                      v-for="(btn, index) of btns"
-                      >{{ btn.text }}</el-button
-                    >
-                  </slot>
+                    " :label-width="formItem.labelWidth || null" :prop="field">
+                  <component :disabled="formItem._disabled" :readonly="readonly" :desc="formItem" :is="formItem._type" :options="formItem._options" :ref="field" :field="field" :formData="formData" @update="setValue(field, $event)" :value="formData[field]" />
+                  <div class="ele-form-tip" v-if="formItem._tip" v-html="formItem._tip"></div>
                 </el-form-item>
               </el-col>
-            </el-row>
-          </el-form>
-        </el-col>
-      </el-row>
-    </div>
+            </template>
+            <slot name="form-footer" />
+            <!-- 操作按钮区 -->
+            <el-col class="ele-form-btns" v-if="btns.length">
+              <el-form-item :label-width="inline ? '10px' : null">
+                <!-- 按钮插槽 -->
+                <slot :btns="btns" name="form-btn">
+                  <el-button :key="index" @click="btn.click" v-bind="btn.attrs" v-for="(btn, index) of btns">{{ btn.text }}</el-button>
+                </slot>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
+      </el-col>
+    </el-row>
   </div>
+</div>
 </template>
 
 <script>
-import { isUnDef, is, castArray, isEmpty } from "./tools/utils";
+import {
+  is,
+  castArray,
+  isEmpty
+} from "./tools/utils";
 const isNumber = require("is-number");
 const cloneDeep = require("clone");
 
@@ -110,7 +78,7 @@ export default {
     // 校检规则
     rules: {
       type: Object,
-      default() {
+      default () {
         return {};
       },
     },
@@ -218,8 +186,7 @@ export default {
           .forEach((key) => {
             oldFormDescData[key] = this.formDescData[key];
           });
-        this.formDescData = Object.assign(
-          {},
+        this.formDescData = Object.assign({},
           oldFormDescData,
           cloneDeep(formDesc)
         );
@@ -231,24 +198,15 @@ export default {
       handler(desc) {
         if (desc) {
           Object.keys(desc).forEach((field) => {
-            // 当全局设置 mock 为 true 时, 所有子项都标记为 true
-            // if (this.mock && isUnDef(desc[field].mock)) {
-            //   desc[field].mock = true
-            // }
 
             // 设置默认值
             this.setDefaultvalue(desc[field], field);
 
-            // 转换 tip, 内部属性不显示
-            // if (desc[field].tip) {
-            //   desc[field]._tip = String(desc[field].tip).replace(
-            //     /`(.+?)`/g,
-            //     '<code>$1</code>'
-            //   )
-            // }
+            // 设置表单tip信息
+            this.setTip(desc[field])
 
-            // layout值, 内部属性不显示
-            //desc[field]._colAttrs = this.getColAttrs(desc[field].layout)
+            // 栅格处理值, 内部属性不显示
+            desc[field]._colAttrs = this.getColAttrs(desc[field].span)
 
             // 老数据, 用于options切换不同类型和type切换不懂类型时, 保留旧数据
             // 例如 原type为 switch, 后改为 input, 出现类型和值不兼容情况, 就需要保留原数据
@@ -256,7 +214,7 @@ export default {
             //   desc[field]._oldValue = {}
             // }
 
-            //this.setVif(desc[field], field)
+            this.setVif(desc[field], field)
 
             // if (desc[field]._vif) {
             //   // 设置 options
@@ -430,7 +388,7 @@ export default {
         ) {
           rules[field].push({
             required: true,
-            message: this.formDescData[field]._label + t('ele-form.required')
+            message: this.formDescData[field]._label + '必填'
           })
         }
         return rules
@@ -443,6 +401,14 @@ export default {
   },
 
   methods: {
+    setTip(descField) {
+      if (descField.tip) {
+        descField._tip = String(descField.tip).replace(
+          /`(.+?)`/g,
+          '<code>$1</code>' //文本重点显示
+        )
+      }
+    },
     getValue(field) {
       return this.formData[field]
     },
@@ -458,7 +424,12 @@ export default {
     },
     // 获取col的属性(是否为inline模式)
     getColAttrs(layout) {
-      return this.inline ? { span: layout || 6 } : { md: layout || 24, xs: 24 }
+      return this.inline ? {
+        span: layout || 6
+      } : {
+        md: layout || 24,
+        xs: 24
+      }
     },
 
     // 检查联动
@@ -521,13 +492,13 @@ export default {
       }
       this.$set(formItem, "_vif", vif);
     },
-    
+
     // 设置默认值
     setDefaultvalue(formItem, field) {
       let defaultValue =
-        typeof formItem.default === "function"
-          ? formItem.default(this.formData)
-          : formItem.default;
+        typeof formItem.default === "function" ?
+        formItem.default(this.formData) :
+        formItem.default;
       // 默认值不为空  & (值为空 || 老值和当前值)
       if (!isEmpty(defaultValue) && isEmpty(this.formData[field])) {
         // 判断是否有格式化函数
@@ -544,9 +515,9 @@ export default {
     getComponentName(type) {
       if (this.$DFormBuiltInNames.includes(type)) {
         // 内置组件
-        console.log("d-form-"+type)
+        console.log("d-form-" + type)
         return "d-form-" + type;
-        
+
       } else {
         // 外部组件
         return type;
@@ -559,9 +530,9 @@ export default {
     },
     // 获取动态属性
     getDynamicAttr(attr, field) {
-      return typeof attr === "function"
-        ? this.getFunctionAttr(attr, field)
-        : attr;
+      return typeof attr === "function" ?
+        this.getFunctionAttr(attr, field) :
+        attr;
     },
 
     // 转对象的key
@@ -643,8 +614,8 @@ export default {
             // 其他报错
             throw new TypeError(
               'options的类型不正确, options及options请求结果类型可为: 字符串数组, 对象数组, 函数和Promise或者URL地址, 当前值为: ' +
-                options +
-                ', 不属于以上四种类型, 具体请参考: https://www.yuque.com/chaojie-vjiel/vbwzgu/rgenav'
+              options +
+              ', 不属于以上四种类型, 具体请参考: https://www.yuque.com/chaojie-vjiel/vbwzgu/rgenav'
             )
           }
         }
@@ -680,9 +651,9 @@ export default {
     validateComponent() {
       const validators = this.formDescKeys
         .map(key =>
-          this.$refs[key] && this.$refs[key][0]
-            ? this.$refs[key][0].validate
-            : null
+          this.$refs[key] && this.$refs[key][0] ?
+          this.$refs[key][0].validate :
+          null
         )
         .filter(Boolean)
 
@@ -721,11 +692,19 @@ export default {
       if (messageArr.length) {
         const h = this.$createElement
         messageArr = messageArr.map(msg => {
-          return h('div', { style: { marginBottom: '8px' } }, msg)
+          return h('div', {
+            style: {
+              marginBottom: '8px'
+            }
+          }, msg)
         })
         this.$notify.error({
-          title: t('ele-form.formError'),
-          message: h('div', { style: { marginTop: '12px' } }, messageArr)
+          title: '错误',
+          message: h('div', {
+            style: {
+              marginTop: '12px'
+            }
+          }, messageArr)
         })
       }
     },
@@ -864,3 +843,39 @@ export default {
   },
 };
 </script>
+
+<style>
+.ele-form--inline .ele-form-btns {
+  width: auto;
+}
+
+.ele-form-col--break {
+  clear: both;
+}
+
+.ele-form-tip {
+  color: #909399;
+  line-height: 1.5em;
+  margin-top: 3px;
+}
+
+.ele-form-tip code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}
+
+.ele-form-full-line.el-date-editor.el-input,
+.ele-form-full-line.el-date-editor .el-input__inner,
+.ele-form-full-line.el-date-editor--daterange.el-input__inner,
+.ele-form-full-line.el-date-editor--datetimerange.el-input__inner,
+.ele-form-full-line.el-date-editor--timerange.el-input__inner,
+.ele-form-full-line.el-date-editor--monthrange.el-input__inner,
+.ele-form-full-line.el-cascader,
+.ele-form-full-line.el-select,
+.ele-form-full-line.el-autocomplete {
+  width: 100%;
+}
+</style>
