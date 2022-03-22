@@ -4,14 +4,14 @@ const FormConfigData = {
             type:'switch',
             label:'显示活动名称',
             default:true,
-            //span:6,
+            span:6,
             
         },
         disableName:{
             type:'switch',
             label:'禁用活动名称',
             default:true,
-            //span:6,
+            span:6,
         },
         name: {
             type: 'input',
@@ -20,8 +20,9 @@ const FormConfigData = {
             disabled:(data)=>{
                 return data.disableName
             },
+            break:true,
             tip: '密码长度`大于6位`',
-            //span:6,
+            span:12,
             vif:(data)=>{
                 return data.showName
             },
@@ -47,7 +48,17 @@ const FormConfigData = {
         showName:true,
         disableName:false,
     },
-    inline:true
+    inline:false,
+    formBtns:[
+        {
+            text:'自定义',
+            click:()=>{
+                alert(111)
+            }
+        }
+    ],
+    isShowSubmitBtn:true,
+    submitBtnText:'查询'
 }
 
 

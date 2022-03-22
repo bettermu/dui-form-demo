@@ -14,9 +14,16 @@
       </template>
     </el-form-comp> -->
     <d-form 
-    :form-data="FormConfigData.formData"
-    :form-desc="FormConfigData.formDesc"
-    :inline="FormConfigData.inline">
+    :form-data="formData"
+    :form-desc="formDesc"
+    :inline="inline"
+    :submitBtnText="submitBtnText"
+    :formBtns="formBtns">
+
+    <!-- 自定义按钮插槽 -->
+    <!-- <div slot="form-btn">
+      <el-button >hhhh</el-button>
+    </div> -->
     </d-form>
   </div>
 </template>
@@ -40,7 +47,7 @@ export default {
   data() {
     return {
       label: "hhh",
-      FormConfigData: FormConfigData,
+      ...FormConfigData
     };
   },
   methods: {

@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="">
+  <div class="ele-form" :class="{ 'ele-form--inline': inline }" ref="wrapper">
     <el-row justify="center" type="flex">
       <el-col :span="24">
         <el-form ref="form" :label-width="computedLabelWidth" :label-position="computedLabelPosition" :rules="computedRules" @submit.native.prevent="handleSubmitForm" :model="formData" :validate-on-rule-change="false" :disabled="disabled" v-bind="formAttrs">
@@ -14,7 +14,16 @@
                         ? formItem._label
                         : null
                     " :label-width="formItem.labelWidth || null" :prop="field">
-                  <component :disabled="formItem._disabled" :readonly="readonly" :desc="formItem" :is="formItem._type" :options="formItem._options" :ref="field" :field="field" :formData="formData" @update="setValue(field, $event)" :value="formData[field]" />
+                  <component 
+                    :disabled="formItem._disabled" 
+                    :readonly="readonly" 
+                    :desc="formItem" 
+                    :is="formItem._type" 
+                    :options="formItem._options" 
+                    :ref="field" :field="field" 
+                    :formData="formData" 
+                    @update="setValue(field, $event)" 
+                    :value="formData[field]" />
                   <div class="ele-form-tip" v-if="formItem._tip" v-html="formItem._tip"></div>
                 </el-form-item>
               </el-col>
@@ -92,35 +101,19 @@ export default {
       type: Boolean,
       default: true,
     },
-    // 是否显示 cancel 取消按钮
-    // 默认值: isDialog = true 时, 默认值为 true, 具体查看: computedIsShowCancelBtn
-    isShowCancelBtn: {
-      type: Boolean,
-      default: null,
-    },
-    // 是否显示back按钮
-    // 默认值: 当 inline = true OR isDialog = true, 默认值为 false; 其它情况true. 具体请看计算属性: computedIsShowBackBtn
-    isShowBackBtn: {
-      type: Boolean,
-      default: null,
-    },
     // 是否显示reset按钮
     isShowResetBtn: {
       type: Boolean,
-      default: false,
+      default: true,
     },
     // 提交按钮文本
     // 默认值: 当 inline 为true时, 值为 '查询'; inline 为 false 时,  值为 '提交'. 具体请看计算属性: computedSubmitBtnText
-    submitBtnText: {
+    break: {
       type: String,
       default: null,
     },
-    // 返回按钮
-    backBtnText: String,
     // 重置按钮
     resetBtnText: String,
-    // 取消按钮
-    cancelBtnText: String,
     // 是否显示标签
     isShowLabel: {
       type: Boolean,
@@ -141,24 +134,8 @@ export default {
       type: Boolean,
       default: false,
     },
-    // 是否为弹窗
-    isDialog: {
-      type: Boolean,
-      default: false,
-    },
-    // 弹窗变量控制
-    visible: {
-      type: Boolean,
-      default: false,
-    },
     // options 的请求方法
     optionsFn: Function,
-    // 表单项顺序数组
-    // 数组项为formDesc中的key
-    order: {
-      type: Array,
-      default: () => [],
-    },
     // 是否显示错误后的 notify
     isShowErrorNotify: {
       type: Boolean,
@@ -259,7 +236,6 @@ export default {
           click() {},
         });
       }
-
       // 自定义按钮
       if (this.formBtns) {
         const customBtns = this.formBtns.map((btn) => ({
@@ -272,29 +248,6 @@ export default {
         }));
         btns = [...btns, ...customBtns];
       }
-
-      // 返回按钮
-      if (this.computedIsShowBackBtn) {
-        btns.push({
-          attrs: {
-            size: formBtnSize,
-          },
-          text: this.backBtnText || "返回",
-          click: this.goBack,
-        });
-      }
-
-      // 取消按钮
-      if (this.computedIsShowCancelBtn) {
-        btns.push({
-          attrs: {
-            size: formBtnSize,
-          },
-          text: this.cancelBtnText || "取消",
-          click: this.handleCancelClick,
-        });
-      }
-
       // 重置按钮
       if (this.isShowResetBtn) {
         btns.push({
@@ -307,23 +260,6 @@ export default {
       }
       return btns;
     },
-    computedIsShowCancelBtn() {
-      if (is(this.isShowCancelBtn, "Boolean")) {
-        // 如果指定了, 则使用指定的值
-        return this.isShowCancelBtn;
-      } else {
-        // 如果未指定, 根据 isDialog
-        return this.isDialog;
-      }
-    },
-    // 是否显示返回按钮(inline和layout模式下不同)
-    computedIsShowBackBtn() {
-      if (is(this.isShowBackBtn, "Boolean")) {
-        return this.isShowBackBtn;
-      } else {
-        return !(this.inline || this.isDialog);
-      }
-    },
     // 提交按钮默认值(inline和layout模式下不同)
     computedSubmitBtnText() {
       if (is(this.submitBtnText, "String")) {
@@ -331,30 +267,6 @@ export default {
       } else {
         return "提交";
       }
-    },
-    // 通过order数组排序后的formDesc
-    orderedFormDesc() {
-      // if (this.order && this.order.length > 0) {
-      //   const orderedFormDesc = {}
-      //   // 根据order遍历，先添加到orderedFormDesc的key在之后遍历的时候，会先遍历，从而实现排序的目的。
-      //   this.order.forEach(field => {
-      //     if (this.formDescData[field]) {
-      //       orderedFormDesc[field] = this.formDescData[field]
-      //     } else {
-      //       throw new Error('order中定义的key在formDesc中不存在')
-      //     }
-      //   })
-      //   // 如果key不在order数组的时候，按照原序添加到orderedFormDesc
-      //   Object.keys(this.formDescData).forEach(field => {
-      //     // 当key不在order数组的时候
-      //     if (!orderedFormDesc[field]) {
-      //       orderedFormDesc[field] = this.formDescData[field]
-      //     }
-      //   })
-      //   return orderedFormDesc
-      // } else {
-      return this.formDescData;
-      //}
     },
 
     // 标签宽度(数字和字符串两种处理)
@@ -816,23 +728,7 @@ export default {
       }
     },
 
-    // 返回按钮
-    goBack() {
-      this.$emit("back");
-      if (this.$router) {
-        // vue-router
-        this.$router.back();
-      } else {
-        // 浏览器history API
-        history.back();
-      }
-    },
-    // 点击取消按钮
-    handleCancelClick() {
-      this.$emit("close");
-      this.$emit("cancel");
-      this.$emit("update:visible", false);
-    },
+    
 
     // 重置表单
     resetForm() {
@@ -848,38 +744,3 @@ export default {
 };
 </script>
 
-<style>
-.ele-form--inline .ele-form-btns {
-  width: auto;
-}
-
-.ele-form-col--break {
-  clear: both;
-}
-
-.ele-form-tip {
-  color: #909399;
-  line-height: 1.5em;
-  margin-top: 3px;
-}
-
-.ele-form-tip code {
-  padding: 2px 4px;
-  font-size: 90%;
-  color: #c7254e;
-  background-color: #f9f2f4;
-  border-radius: 4px;
-}
-
-.ele-form-full-line.el-date-editor.el-input,
-.ele-form-full-line.el-date-editor .el-input__inner,
-.ele-form-full-line.el-date-editor--daterange.el-input__inner,
-.ele-form-full-line.el-date-editor--datetimerange.el-input__inner,
-.ele-form-full-line.el-date-editor--timerange.el-input__inner,
-.ele-form-full-line.el-date-editor--monthrange.el-input__inner,
-.ele-form-full-line.el-cascader,
-.ele-form-full-line.el-select,
-.ele-form-full-line.el-autocomplete {
-  width: 100%;
-}
-</style>

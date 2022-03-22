@@ -1,0 +1,33 @@
+.ele-form--inline .ele-form-btns {
+  width: auto;
+}
+
+.ele-form-col--break {
+  clear: both;
+}
+
+.ele-form-tip {
+  color: #909399;
+  line-height: 1.5em;
+  margin-top: 3px;
+}
+
+.ele-form-tip code {
+  padding: 2px 4px;
+  font-size: 90%;
+  color: #c7254e;
+  background-color: #f9f2f4;
+  border-radius: 4px;
+}
+
+.ele-form-full-line.el-date-editor.el-input,
+.ele-form-full-line.el-date-editor .el-input__inner,
+.ele-form-full-line.el-date-editor--daterange.el-input__inner,
+.ele-form-full-line.el-date-editor--datetimerange.el-input__inner,
+.ele-form-full-line.el-date-editor--timerange.el-input__inner,
+.ele-form-full-line.el-date-editor--monthrange.el-input__inner,
+.ele-form-full-line.el-cascader,
+.ele-form-full-line.el-select,
+.ele-form-full-line.el-autocomplete {
+  width: 100%;
+}
