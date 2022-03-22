@@ -236,6 +236,10 @@ export default {
     }
   },
 
+  mounted(){
+    console.log(this.$refs)
+  },
+
   computed: {
     // 按钮
     btns() {
@@ -363,7 +367,7 @@ export default {
     },
 
     computedLabelPosition() {
-      return "top";
+      return "left";
     },
 
     // 表单错误信息
