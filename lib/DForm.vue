@@ -9,18 +9,25 @@
           <el-row :gutter="20">
             <template v-for="(formItem, field) of formDescData">
               <el-col :key="field" v-bind="formItem._colAttrs" v-if="formItem._vif" :class="{ 'ele-form-col--break': formItem.break }">
-                <el-form-item :error="formErrorObj ? formErrorObj[field] : null" :label="
+                <el-form-item 
+                  :error="formErrorObj ? formErrorObj[field] : null" 
+                  :label="
                       isShowLabel && formItem.isShowLabel !== false
                         ? formItem._label
-                        : null
-                    " :label-width="formItem.labelWidth || null" :prop="field">
+                        : null" 
+                  :label-width="formItem.labelWidth || null" :prop="field">
+                  <!-- <span slot="label"></span> -->
+                  <template v-if="formItem.labelSlot" v-slot:label >
+                    <extend-slot :render="formItem.labelSlot" />
+                  </template>
                   <component 
                     :disabled="formItem._disabled" 
                     :readonly="readonly" 
                     :desc="formItem" 
                     :is="formItem._type" 
                     :options="formItem._options" 
-                    :ref="field" :field="field" 
+                    :ref="field"
+                    :field="field" 
                     :formData="formData" 
                     @update="setValue(field, $event)" 
                     :value="formData[field]" />
@@ -52,11 +59,15 @@ import {
   castArray,
   isEmpty
 } from "./tools/utils";
+import ExtendSlot from './tools/ExtendSlot'
 const isNumber = require("is-number");
 const cloneDeep = require("clone");
 
 export default {
   name: "DForm",
+  components:{
+    ExtendSlot
+  },
   model: {
     prop: "formData",
     event: "input",

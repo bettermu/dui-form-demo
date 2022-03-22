@@ -3,10 +3,28 @@ const FormConfigData = {
         showName: {
             type:'switch',
             label:'显示活动名称',
+            labelSlot:(h)=>{
+                return h('div',{},[h('span',{},'自定义label') , h('el-tooltip',{
+                    props:{
+                        content:'活动名称tooltip',
+                        placement:'top-start'
+                    },
+                },[ h('i',{
+                    class:"el-icon-question",
+                    style:{
+                        cursor:'pointer'
+                    },
+                    on:{
+                        click:()=>{
+                            alert(111)
+                        }
+                    }
+                })]) ])
+            },
             default:true,
             span:6,
-            
         },
+        
         disableName:{
             type:'switch',
             label:'禁用活动名称',
@@ -119,6 +137,9 @@ const FormConfigData = {
 // }
 
 export default FormConfigData
+
+
+
 
 
 
