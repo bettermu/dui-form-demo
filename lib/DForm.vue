@@ -401,6 +401,7 @@ export default {
         this.$set(formItem, "_attrs", attrs);
         this.$set(formItem, "_label", label);
         this.$set(formItem, "_prop", prop);
+        this.$set(formItem, "_options", formItem.options);
         // this.$set(formItem, '_optionsLinkageFields', optionsLinkageFields)
       });
     },
@@ -442,7 +443,6 @@ export default {
     getComponentName(type) {
       if (this.$DFormBuiltInNames.includes(type)) {
         // 内置组件
-        console.log("d-form-" + type)
         return "d-form-" + type;
 
       } else {

@@ -4,7 +4,7 @@
     :style="desc.style"
     v-bind="attrs"
     v-model="newValue"
-    @change="handleChange"
+    v-on="onEvents"
   />
 </template>
 
@@ -14,7 +14,7 @@ import formMixin from '../mixins/formMixin'
 export default {
   name: 'DFormSwitch',
   mixins: [formMixin],
-  data() {
+  data(){
     return {
       //mockRule: '@boolean'
     }

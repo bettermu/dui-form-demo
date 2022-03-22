@@ -4,7 +4,6 @@
     :style="desc.style"
     v-bind="attrs"
     v-model="newValue"
-    v-on="desc.on"
     @change="handleChange"
   >
     <!-- <template v-for="(render, key) of slots" v-slot:[key]>
@@ -33,7 +32,6 @@ export default {
   },
   methods: {
     handleChange(val) {
-      console.log(this.desc.on)
       if (this.attrs.type === 'number') {
         val = Number(val)
       }

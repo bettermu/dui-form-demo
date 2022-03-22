@@ -52,6 +52,16 @@ const FormConfigData = {
             
         },
 
+        sex:{
+            type:'radio',
+            label:'性别',
+            default:0,
+            options: [
+                { label: '男', value: 0 },
+                { label: '女', value: 1 }
+              ]
+        }
+
         
 
     },
@@ -65,6 +75,7 @@ const FormConfigData = {
         name:'hhhhh',
         showName:true,
         disableName:false,
+        sex:0
     },
     inline:false,
     formBtns:[
