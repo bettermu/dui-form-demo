@@ -34,7 +34,7 @@ const FormConfigData = {
         name: {
             type: 'input',
             label: '活动名称',
-            default: 'hh',
+            default: 'hhh',
             disabled:(data)=>{
                 return data.disableName
             },
@@ -60,6 +60,25 @@ const FormConfigData = {
                 { label: '男', value: 0 },
                 { label: '女', value: 1 }
               ]
+        },
+
+        like:{
+            type:'checkbox',
+            label:'兴趣',
+            default:[1],
+            options: (data)=>{
+                if (data.sex === 0) {
+                    return [
+                      { label: '陪女朋友', value: 1 },
+                      { label: '写代码', value: 2 }
+                    ]
+                  } else {
+                    return [
+                      { label: '看动漫', value: 3 },
+                      { label: '写代码', value: 4 }
+                    ]
+                  }
+            }
         }
 
         
@@ -75,7 +94,8 @@ const FormConfigData = {
         name:'hhhhh',
         showName:true,
         disableName:false,
-        sex:0
+        sex:0,
+        like:[]
     },
     inline:false,
     formBtns:[

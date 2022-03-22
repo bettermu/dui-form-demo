@@ -340,7 +340,6 @@ export default {
       return this.formData[field]
     },
     setValue(field, val) {
-      console.log(val)
       this.handleChange(field, val);
       this.checkLinkage();
     },
@@ -391,6 +390,12 @@ export default {
         // 6.动态 prop
         const prop = this.getDynamicAttr(formItem.prop, field);
 
+        if(formItem.options){
+          const options = this.getDynamicAttr(formItem.options,field)
+          this.setOptions(options, field)
+        }
+        
+
         // 7.动态 optionsLinkageFields
         // const optionsLinkageFields = castArray(
         //   this.getDynamicAttr(formItem.optionsLinkageFields, field)
@@ -401,7 +406,9 @@ export default {
         this.$set(formItem, "_attrs", attrs);
         this.$set(formItem, "_label", label);
         this.$set(formItem, "_prop", prop);
-        this.$set(formItem, "_options", formItem.options);
+
+        
+        //this.$set(formItem, "_options", formItem.options);
         // this.$set(formItem, '_optionsLinkageFields', optionsLinkageFields)
       });
     },
@@ -556,23 +563,24 @@ export default {
     // 设置options
     setOptions(options, field) {
       const formItem = this.formDescData[field]
-      const prop = formItem._prop
+      //const prop = formItem._prop
       // 将options每一项转为对象
-      let newOptions = this.getObjArrOptions(options)
+      // let newOptions = this.getObjArrOptions(options)
       const oldOptionsValues = (formItem._options || [])
         .map(item => item.value)
         .join(',')
       // 改变prop为规定的prop
-      newOptions = this.changeProp(newOptions, prop)
-      const newOptionsValues = newOptions.map(item => item.value).join(',')
-      this.$set(this.formDescData[field], '_options', newOptions)
+      //newOptions = this.changeProp(newOptions, prop)
+      const newOptionsValues = options.map(item => item.value).join(',')
+      this.$set(this.formDescData[field], '_options', options)
+
 
       // 新 options 和老 options 不同时，触发值的改变
-      if (formItem.isRestValByOptions !== false) {
-        if (oldOptionsValues && newOptionsValues !== oldOptionsValues) {
-          this.setValue(field, null)
-        }
-      }
+      // if (formItem.isRestValByOptions !== false) {
+      //   if (oldOptionsValues && newOptionsValues !== oldOptionsValues) {
+      //     this.setValue(field, null)
+      //   }
+      // }
     },
     // 验证所有组件的内置验证方法
     validateComponent() {
@@ -746,10 +754,13 @@ export default {
       this.$emit("reset");
       this.$refs.form.resetFields();
 
+      // 重置表单的时候，可能需要进行一次联动检查
+      this.checkLinkage();
+
       // 调用内部方法进行值的重置
-      this.$refs.form.fields.forEach((field) => {
-        this.formData[field.prop] = field.initialValue;
-      });
+      // this.$refs.form.fields.forEach((field) => {
+      //   this.formData[field.prop] = field.initialValue;
+      // });
     },
   },
 };

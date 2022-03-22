@@ -4,7 +4,7 @@
     :style="desc.style"
     v-bind="attrs"
     v-model="newValue"
-    v-on="onEvents"
+    @change="handleChange"
   />
 </template>
 
