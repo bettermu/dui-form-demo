@@ -61,9 +61,22 @@ const FormConfigData = {
             monitor:{
                 key:['name'],
                 handler:(monitorData,selfData)=>{
-                    selfData.desc.label="label"+ monitorData
                     return {
-                        desc:selfData.desc,
+                        value: monitorData
+                    }
+                }
+            }
+        },
+        custom: {
+            type: 'CustomInput',
+            label: '自定义input',
+            default: '',
+            break:true,
+            span:12,
+            monitor:{
+                key:['name'],
+                handler:(monitorData,selfData)=>{
+                    return {
                         value: monitorData
                     }
                 }
@@ -114,7 +127,8 @@ const FormConfigData = {
         showName:true,
         disableName:false,
         sex:0,
-        like:[]
+        like:[],
+        custom:''
     },
     inline:false,
     formBtns:[
@@ -161,7 +175,7 @@ const FormConfigData = {
 //             scopedSlots:{
 //                 slotName:Function
 //             }, // 组件作用域插槽
-//             labelSlots:{},   //  自定义label插槽  
+//             labelSlots: String | Function,   //  自定义label插槽  
             
 //             // 还会有一些与组件强相关的属性配置
 //         }

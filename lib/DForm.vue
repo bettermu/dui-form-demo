@@ -386,7 +386,6 @@ export default {
       const formData = this.formData;
       Object.keys(formDescData).forEach((field) => {
         const formItem = formDescData[field];
-
         // 1.设置 type
         let type = formItem.type;
 
