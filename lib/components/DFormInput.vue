@@ -4,7 +4,7 @@
     :style="desc.style"
     v-bind="attrs"
     v-model="newValue"
-    @change="handleChange"
+    v-on="onEvent"
   >
     <!-- <template v-for="(render, key) of slots" v-slot:[key]>
       <extend-slot :key="key" :render="render" />
@@ -35,7 +35,7 @@ export default {
       if (this.attrs.type === 'number') {
         val = Number(val)
       }
-      this.$emit('update', val)
+      this.updateForm(val)
     }
   }
 }

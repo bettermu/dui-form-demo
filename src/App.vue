@@ -18,6 +18,7 @@
     :form-desc="formDesc"
     :inline="inline"
     :submitBtnText="submitBtnText"
+    @before-request="beforeRequest"
     :formBtns="formBtns">
 
     <!-- 自定义按钮插槽 -->
@@ -46,11 +47,13 @@ export default {
   },
   data() {
     return {
-      label: "hhh",
       ...FormConfigData
     };
   },
   methods: {
+    beforeRequest(data){
+      console.log(data)
+    }
     
   },
 };

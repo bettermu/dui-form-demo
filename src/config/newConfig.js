@@ -38,6 +38,7 @@ const FormConfigData = {
             disabled:(data)=>{
                 return data.disableName
             },
+            trigger:'input',
             break:true,
             tip: '密码长度`大于6位`',
             span:12,
@@ -50,6 +51,23 @@ const FormConfigData = {
                 { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
               ]
             
+        },
+        linkName: {
+            type: 'input',
+            label: '联动的活动名称',
+            default: '联动前的值',
+            break:true,
+            span:12,
+            monitor:{
+                key:['name'],
+                handler:(monitorData,selfData)=>{
+                    selfData.desc.label="label"+ monitorData
+                    return {
+                        desc:selfData.desc,
+                        value: monitorData
+                    }
+                }
+            }
         },
 
         sex:{
@@ -92,6 +110,7 @@ const FormConfigData = {
     // },
     formData: {
         name:'hhhhh',
+        linkName:'',
         showName:true,
         disableName:false,
         sex:0,

@@ -74,7 +74,7 @@ export default {
   },
   provide() {
     return {
-      DForm: this,
+      $DForm: this,
     };
   },
   props: {
@@ -157,6 +157,7 @@ export default {
     return {
       formDescData: {},
       oldFormData: {},
+      monitorMap: {}   //联动回调存储
     };
   },
   watch: {
@@ -226,6 +227,10 @@ export default {
 
   mounted(){
     console.log(this.$refs)
+  },
+
+  created(){
+
   },
 
   computed: {
@@ -328,6 +333,17 @@ export default {
   },
 
   methods: {
+    //注册联动逻辑
+    registerMonitor(key, handler){
+      let newKey = key;
+      if (!Array.isArray(newKey)) newKey = [newKey];
+      newKey.forEach((k)=>{
+        if(!this.monitorMap[k]){
+          this.monitorMap[key] = []
+        }
+        this.monitorMap[k].push(handler)
+      })
+    },
     setTip(descField) {
       if (descField.tip) {
         descField._tip = String(descField.tip).replace(
@@ -342,11 +358,17 @@ export default {
     setValue(field, val) {
       this.handleChange(field, val);
       this.checkLinkage();
+
+      //表单联动逻辑
+      if(!this.monitorMap[field]) return
+      this.monitorMap[field].forEach((handler)=>{
+        handler(field,val)
+      })
     },
     handleChange(field, val) {
       this.oldFormData = cloneDeep(this.formData);
       this.$set(this.formData, field, val);
-      this.$emit("input", this.formData);
+      //this.$emit("input", this.formData);
     },
     // 获取col的属性(是否为inline模式)
     getColAttrs(layout) {
@@ -406,6 +428,10 @@ export default {
         this.$set(formItem, "_attrs", attrs);
         this.$set(formItem, "_label", label);
         this.$set(formItem, "_prop", prop);
+
+        // 内部使用的field name 
+        this.$set(formItem, "_name", field);
+
 
         
         //this.$set(formItem, "_options", formItem.options);
